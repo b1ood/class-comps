@@ -1,45 +1,61 @@
-import React, { Component } from 'react';
+import React, { useEffect, useState} from 'react';
 import SearchComp from './components/SearchComp.tsx';
-import DemonstrationComp from './components/DemonstrationComp.tsx';
-import { fetchPokemonData, PokemonDataInterface } from './fetch/fetch.tsx';
+import {fetchAllPokemons, fetchPokemonData, PokemonDataInterface, PokemonsData} from './fetch/fetch.tsx';
 import ErrorBoundary from './errorBoundary/errorBoundary.tsx';
+import PokemonsList from './components/DemonstrationComp.tsx';
 
-type AppState = {
-  pokData: PokemonDataInterface | null;
-};
+const App: React.FC = () => {
+  const [pokData, setPokData] = useState<PokemonDataInterface[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [totalCount, setTotalCount] = useState(0);
+  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(1);
 
-class App extends Component<null, AppState> {
-  constructor(props) {
-    super(props);
-    this.searchPokemon = this.searchPokemon.bind(this);
-
-    this.state = {
-      pokData: null,
-    };
+  const getAllPokemons = async () => {
+    setIsLoading(true);
+    const response = await fetchAllPokemons(limit, page);
+    setTotalCount(response.headers['x-total-count']);
+    const pokemonsData: PokemonsData = await response.data;
+    const result = pokemonsData.results.map(async (pokemon) => {
+      const pokemonData = await fetchPokemonData(pokemon.name);
+      setPokData(prevItems => [...prevItems, pokemonData]);
+    });
+    if (result.length) {
+      setIsLoading(false);
+    }
   }
 
-  searchPokemon = (value) => {
+  const searchPokemon = async (value) => {
+    setIsLoading(true);
+    setPokData([]);
     if (value) {
       localStorage.setItem('prev', value?.toLowerCase()?.trim());
-      fetchPokemonData(value.toLowerCase()).then((data) => {
-        this.setState({ pokData: data });
-      });
+      const pokemonData = await fetchPokemonData(value.toLowerCase());
+      setPokData(prevItems => [...prevItems, pokemonData]);
+      setIsLoading(false);
     } else {
+      getAllPokemons();
       localStorage.clear();
-      location.reload();
     }
   };
 
-  render() {
-    return (
+  useEffect(() => {
+    let prev = localStorage.getItem('prev');
+    if (prev) {
+      searchPokemon(prev);
+      return;
+    }
+    getAllPokemons();
+  }, []);
+
+  return (
       <div>
         <ErrorBoundary>
-          <SearchComp search={this.searchPokemon} />
-          <DemonstrationComp newPok={this.state.pokData} />
+          <SearchComp search={searchPokemon} />
+          <PokemonsList pokemons={pokData} isLoaded={isLoading}/>
         </ErrorBoundary>
       </div>
-    );
-  }
-}
+  );
+};
 
 export default App;

@@ -1,18 +1,12 @@
-import React, { Component } from 'react';
+import React from 'react';
 import { StatsInterface } from '../fetch/fetch.tsx';
 
-class StatsComp extends Component<StatsInterface, null> {
-  constructor(props) {
-    super(props);
-  }
+const Stats: React.FC<StatsInterface> = ({ stat, base_stat }) => {
+  return (
+    <p>
+      {stat.name}: {base_stat}
+    </p>
+  );
+};
 
-  render() {
-    return (
-      <p>
-        {this.props.stat.name}: {this.props.base_stat}
-      </p>
-    );
-  }
-}
-
-export default StatsComp;
+export default Stats;
