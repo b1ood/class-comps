@@ -12,18 +12,9 @@ body {
 }
 
 input,
-button {
+button,
+a {
   all: unset;
-}
-
-.demo {
-  margin-top: 20px;
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: space-evenly;
-  align-items: center;
-  row-gap: 10px;
 }
 
 .loader-wrapper {
@@ -31,4 +22,11 @@ button {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.not-found {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
 }

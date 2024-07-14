@@ -20,15 +20,8 @@ export interface PokemonsData {
     results: {
         name: string;
     }[];
-}
-
-interface ResponseInterface {
-    abilities: [
-        ability: {
-            name: string,
-            url: string,
-        }
-    ]
+    previous: string,
+    next: string,
 }
 
 export const fetchPokemonData = async (pokemonName) => {
@@ -54,14 +47,24 @@ export const fetchPokemonData = async (pokemonName) => {
     }
 };
 
-export const fetchAllPokemons = async (limit = 10, page= 10): Promise<axios.AxiosResponse<PokemonsData>> => {
+export const fetchAllPokemons = async (url = 'https://pokeapi.co/api/v2/pokemon/', offset = 0): Promise<axios.AxiosResponse<PokemonsData>> => {
     try {
-        const response = await axios.get('https://pokeapi.co/api/v2/pokemon', {
-            // params: {
-            //     limit: limit,
-            //     page: page,
-            // }
-        });
+        if (url === 'https://pokeapi.co/api/v2/pokemon/') {
+            const response = await axios.get(url, {
+                params: {
+                    limit: 14,
+                    offset: offset,
+                }
+            });
+
+            if (response.status !== 200) {
+                throw new Error('Network response was not ok.');
+            }
+
+            return response;
+        }
+
+        const response = await axios.get(url);
 
         if (response.status !== 200) {
             throw new Error('Network response was not ok.');

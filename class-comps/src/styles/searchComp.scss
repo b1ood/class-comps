@@ -39,6 +39,13 @@
       color: gray;
       cursor: default;
     }
+
+    &:hover {
+      border: 3px solid #264a83;
+      color: #264a83;
+      background: #48d76b;
+      transition: .3s;
+    }
   }
 
   &__err-btn {
