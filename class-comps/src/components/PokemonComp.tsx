@@ -18,7 +18,7 @@ const Pokemon: React.FC<PokemonProps> = ({pokemon, getChosenPok}) => {
         <div className="pokemon__page">
             <div className="pokemon">
                 <h2 className="pokemon__name" onClick={()=> {
-                    navigate('page/' + pokemon.id)
+                    // navigate('page/' + pokemon.id)
                     getChosenPok(pokemon);
                 }}>{pokemon.name}</h2>
                 <img src={pokemon.imgSrc} alt="pokPic" />
