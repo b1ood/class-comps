@@ -1,7 +1,7 @@
 import React from 'react';
 import {PokemonDataInterface} from '../fetch/fetch.tsx';
 import Pokemon from './PokemonComp.tsx';
-import Loader from './UI/Loader.tsx';
+import Loader from './UI/loader/Loader.tsx';
 
 import '../styles/pokemonList.scss';
 import '../styles/pokemonComp.scss';
@@ -43,6 +43,7 @@ const PokemonsList: React.FC<PokemonListProps> = (
                         </div>
                     )}
                 </div>
+                { pokemons.length !== 1 &&
                 <div className="demo__pagination">
                     <button
                         className="demo__btn-pagination"
@@ -59,6 +60,7 @@ const PokemonsList: React.FC<PokemonListProps> = (
                         }}>Next
                     </button>
                 </div>
+                }
             </div>
         )
 };

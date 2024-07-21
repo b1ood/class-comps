@@ -1,9 +1,10 @@
-import React from 'react';
-import Stats from './StatsComp.tsx';
+import React, {useEffect, useState} from 'react';
 import {PokemonDataInterface} from "../fetch/fetch.tsx";
-import {Link, Route, useLocation, useNavigate} from "react-router-dom";
 
 import '../styles/pokemonComp.scss';
+import {useDispatch, useSelector} from "react-redux";
+import {ADD_POKEMON_IN_LIST} from "../types/types.ts";
+import {handleSelectedPokemon} from "../store/actions/SelectedItemsAction.ts";
 
 interface PokemonProps {
     pokemon: PokemonDataInterface,
@@ -11,24 +12,47 @@ interface PokemonProps {
 }
 
 const Pokemon: React.FC<PokemonProps> = ({pokemon, getChosenPok}) => {
-    const navigate = useNavigate();
 
+    const [isChecked, setIsChecked] = useState(false);
+    const dispatch = useDispatch();
 
-  return (
-        <div className="pokemon__page">
-            <div className="pokemon">
-                <h2 className="pokemon__name" onClick={()=> {
-                    // navigate('page/' + pokemon.id)
-                    getChosenPok(pokemon);
-                }}>{pokemon.name}</h2>
-                <img src={pokemon.imgSrc} alt="pokPic" />
-                <h3>Size</h3>
-                <p>Height: {pokemon.height}</p>
-                <p>Weight: {pokemon.weight}</p>
-                <h3>Stats</h3>
-                <div className="pokemon__stats">
-                    {pokemon.stats?.map((stat) => <Stats base_stat={stat.base_stat} stat={stat.stat}/>)}
+    const addPokemon = (pokemon) => {
+        dispatch(handleSelectedPokemon(pokemon));
+    }
+
+    const checkSelectedPok = (id) => {
+        const selectedPoks: PokemonDataInterface[] = JSON.parse(localStorage.getItem('selectedPoks')) || [];
+
+        if (selectedPoks.some(selectedPok => id === selectedPok.id)) {
+            return setIsChecked(true);
+        } else {
+            selectedPoks.filter(selectedPok => selectedPok.id !== pokemon.id);
+            localStorage.setItem('selectedPoks', JSON.stringify(selectedPoks));
+            return setIsChecked(false);
+        }
+
+    }
+
+    useEffect(() => {
+        checkSelectedPok(pokemon.id)
+    }, [isChecked]);
+
+    return (
+        <div>
+            <div className="pokemon-comp">
+                <div>
+                    <h2
+                        className="pokemon-comp__name" onClick={() => {
+                        getChosenPok(pokemon);
+                    }}>{pokemon.name}</h2>
+                    <input type="checkbox" className="pokemon-comp__checkbox" checked={isChecked}
+                           onChange={() => {
+                               addPokemon(pokemon);
+                               return (isChecked) ? setIsChecked(false) : setIsChecked(true);
+                           }}
+                    />
                 </div>
+                <img className="pokemon-comp__img" src={pokemon.imgSrc} alt="pokPic"/>
             </div>
         </div>
     );

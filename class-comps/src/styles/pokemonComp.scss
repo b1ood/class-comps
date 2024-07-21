@@ -1,13 +1,12 @@
-.pokemon {
+.pokemon-comp {
+  position: relative;
   display: flex;
-  flex-direction: column;
-  justify-content: space-around;
+  justify-content: space-between;
   align-items: center;
   width: 200px;
-  height: 350px;
   border: 1px solid #48d76b;
   border-radius: 15px;
-  padding: 10px;
+  padding: 5px 15px 5px 10px;
   box-sizing: border-box;
 
   &__name {
@@ -24,9 +23,19 @@
     }
   }
 
-  &__stats {
-    text-align: left;
-    font-weight: lighter;
+  &__img {
+    width: 50px;
+    height: 50px;
+  }
+
+  &__checkbox {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #48d76b;
+    
+    &:checked {
+      background: #000;
+    }
   }
 }
 
@@ -43,10 +52,35 @@
 }
 
 .pokemon-box {
-  height: 100%;
-  margin-top: 20px;
-  width: 70vh;
+  margin: 0 auto;
+  width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.pokemon {
+  width: 200px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  align-items: center;
+  border: 1px solid #48d76b;
+  border-radius: 15px;
+  padding: 5px 10px;
+  box-sizing: border-box;
+  float: right;
+
+  &__name {
+    cursor: default;
+
+    &:first-letter {
+      text-transform: capitalize;
+    }
+  }
+
+  &__img {
+    height: 100px;
+    width: 100px;
+  }
 }

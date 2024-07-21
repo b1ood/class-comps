@@ -52,7 +52,7 @@ export const fetchAllPokemons = async (url = 'https://pokeapi.co/api/v2/pokemon/
         if (url === 'https://pokeapi.co/api/v2/pokemon/') {
             const response = await axios.get(url, {
                 params: {
-                    limit: 14,
+                    limit: 12,
                     offset: offset,
                 }
             });

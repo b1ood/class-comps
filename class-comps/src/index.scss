@@ -9,6 +9,7 @@
 body {
   background: #264a83;
   color: #48d76b;
+  transition: .3s;
 }
 
 input,
@@ -29,4 +30,11 @@ a {
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
+}
+
+.dark {
+  transition: .3s;
+  background: rgba(24, 24, 24);
+  color: #d0d0d0;
+  border-color: #d0d0d0 !important;
 }

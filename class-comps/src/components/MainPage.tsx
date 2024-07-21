@@ -69,6 +69,12 @@ const MainPage = () => {
             <ErrorBoundary>
                 <SearchComp search={searchPokemon}/>
                 <div className="box">
+                    <PokemonsList
+                        pokemons={pokData} isLoaded={isLoading}
+                        prev={prev} next={next}
+                        getNext={() => getNext()}
+                        getPrev={() => getPrev()}
+                        chosenPok={getChosenPok}/>
                     {chosenPok &&
                       <PokemonPage
                         id={chosenPok.id}
@@ -77,14 +83,9 @@ const MainPage = () => {
                         weight={chosenPok.weight}
                         imgSrc={chosenPok.imgSrc}
                         stats={chosenPok.stats}
+                        isLoaded={isLoading}
                       />
                     }
-                    <PokemonsList
-                        pokemons={pokData} isLoaded={isLoading}
-                        prev={prev} next={next}
-                        getNext={() => getNext()}
-                        getPrev={() => getPrev()}
-                        chosenPok={getChosenPok}/>
                 </div>
             </ErrorBoundary>
         </div>
