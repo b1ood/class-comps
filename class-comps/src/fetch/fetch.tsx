@@ -1,6 +1,3 @@
-import axios from "axios";
-import {createApi, fetchBaseQuery} from "@reduxjs/toolkit/query/react";
-
 export interface PokemonDataInterface {
     id: number;
     name: string;
@@ -25,7 +22,7 @@ export interface PokemonsData {
     next: string,
 }
 
-export const fetchPokemonData = async (pokemonName) => {
+export const fetchPokemonData = async (pokemonName: string) => {
     try {
         const response = await fetch('https://pokeapi.co/api/v2/pokemon/' + pokemonName);
         if (!response.ok) {
@@ -47,40 +44,3 @@ export const fetchPokemonData = async (pokemonName) => {
         console.log(e);
     }
 };
-
-// export const fetchAllPokemons = async (url = 'https://pokeapi.co/api/v2/pokemon/', offset = 0): Promise<axios.AxiosResponse<PokemonsData>> => {
-//     try {
-//         if (url === 'https://pokeapi.co/api/v2/pokemon/') {
-//             const response = await axios.get(url, {
-//                 params: {
-//                     limit: 12,
-//                     offset: offset,
-//                 }
-//             });
-//
-//             if (response.status !== 200) {
-//                 throw new Error('Network response was not ok.');
-//             }
-//
-//             return response;
-//         }
-//
-//         const response = await axios.get(url);
-//
-//         if (response.status !== 200) {
-//             throw new Error('Network response was not ok.');
-//         }
-//
-//         return response;
-//     } catch (e) {
-//         console.log(e);
-//     }
-// };
-
-export const pokemonApi = createApi({
-    reducerPath: 'pokemonApi',
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://pokeapi.co/api/v2/' }),
-    endpoints: (builder) => ({
-
-    })
-})

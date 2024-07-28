@@ -45,22 +45,22 @@ const PokemonsList: React.FC<PokemonListProps> = (
                     )}
                 </div>
                 {pokemons.length !== 1 &&
-                    <div className="demo__pagination">
-                        <button
-                            className="demo__btn-pagination"
-                            disabled={isPrevButtonAvailable}
-                            onClick={() => {
-                                getPrev();
-                            }}>Prev
-                        </button>
-                        <button
-                            className="demo__btn-pagination"
-                            disabled={isNextButtonAvailable}
-                            onClick={() => {
-                                getNext();
-                            }}>Next
-                        </button>
-                    </div>
+                  <div className="demo__pagination">
+                    <button
+                      className="demo__btn-pagination"
+                      disabled={isPrevButtonAvailable}
+                      onClick={() => {
+                          getPrev();
+                      }}>Prev
+                    </button>
+                    <button
+                      className="demo__btn-pagination"
+                      disabled={isNextButtonAvailable}
+                      onClick={() => {
+                          getNext();
+                      }}>Next
+                    </button>
+                  </div>
                 }
             </div>
         )
