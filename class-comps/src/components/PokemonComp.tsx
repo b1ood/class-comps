@@ -1,9 +1,9 @@
-import React from 'react';
-import Stats from './StatsComp.tsx';
+import React, {useEffect, useState} from 'react';
 import {PokemonDataInterface} from "../fetch/fetch.tsx";
-import {Link, Route, useLocation, useNavigate} from "react-router-dom";
 
 import '../styles/pokemonComp.scss';
+import {useAppDispatch, useAppSelector} from "../store/hooks/redux.ts";
+import {pokemonSlice} from "../store/reducers/pokemonSlice.ts";
 
 interface PokemonProps {
     pokemon: PokemonDataInterface,
@@ -11,24 +11,32 @@ interface PokemonProps {
 }
 
 const Pokemon: React.FC<PokemonProps> = ({pokemon, getChosenPok}) => {
-    const navigate = useNavigate();
+
+    const [isChecked, setIsChecked] = useState(false);
+    const dispatch = useAppDispatch();
+    const {addPokemon, removePokemon} = pokemonSlice.actions;
+    let isCheckedFromState = useAppSelector(state => state.pokemon.selectedItems.find(selectedItem=>selectedItem.name===pokemon.name))
+    useEffect(() => {
+
+    }, [isCheckedFromState])
 
 
-  return (
-        <div className="pokemon__page">
-            <div className="pokemon">
-                <h2 className="pokemon__name" onClick={()=> {
-                    // navigate('page/' + pokemon.id)
-                    getChosenPok(pokemon);
-                }}>{pokemon.name}</h2>
-                <img src={pokemon.imgSrc} alt="pokPic" />
-                <h3>Size</h3>
-                <p>Height: {pokemon.height}</p>
-                <p>Weight: {pokemon.weight}</p>
-                <h3>Stats</h3>
-                <div className="pokemon__stats">
-                    {pokemon.stats?.map((stat) => <Stats base_stat={stat.base_stat} stat={stat.stat}/>)}
+    return (
+        <div>
+            <div className="pokemon-comp">
+                <div>
+                    <h2
+                        className="pokemon-comp__name" onClick={() => {
+                        getChosenPok(pokemon);
+                    }}>{pokemon?.name}</h2>
+                    <input type="checkbox" className="pokemon-comp__checkbox" checked={!!isCheckedFromState}
+                           onChange={() => {
+                               !!isCheckedFromState ? dispatch(removePokemon(pokemon)) : dispatch(addPokemon(pokemon));
+                               return (!!isCheckedFromState) ? setIsChecked(false) : setIsChecked(true);
+                           }}
+                    />
                 </div>
+                <img className="pokemon-comp__img" src={pokemon?.imgSrc || ''} alt="pokPic"/>
             </div>
         </div>
     );

@@ -1,6 +1,6 @@
 .search {
   position: relative;
-  margin: 20px 0 40px 0;
+  margin: 20px 0;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -12,11 +12,10 @@
   }
 
   &__block {
-    margin-top: 40px;
+    margin-top: 20px;
     display: flex;
     column-gap: 10px;
     font-size: 18px;
-    background: #264a83;
     box-sizing: border-box;
   }
 
@@ -38,6 +37,13 @@
       transition: 0.3s;
       color: gray;
       cursor: default;
+
+      &:hover {
+        border: 3px solid #48d76b;
+        color: gray;
+        background: #264a83;
+        transition: .3s;
+      }
     }
 
     &:hover {

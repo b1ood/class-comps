@@ -1,54 +1,44 @@
 import React, {useEffect, useState} from 'react';
-import {fetchAllPokemons, fetchPokemonData, PokemonDataInterface, PokemonsData} from "../fetch/fetch.tsx";
+import {PokemonDataInterface} from "../fetch/fetch.tsx";
 import SearchComp from "./SearchComp.tsx";
 import PokemonsList from "./PokemonList.tsx";
 import ErrorBoundary from "../errorBoundary/errorBoundary.tsx";
 import PokemonPage from "./PokemonPage.tsx";
+import {useAppDispatch, useAppSelector} from "../store/hooks/redux";
+import {
+    downloadFile,
+    fetchPokemonByName,
+    fetchPokemons,
+    selectAll,
+    unSelectAll
+} from "../store/reducers/pokemonSlice.ts";
 
-const MainPage = () => {
-    const [pokData, setPokData] = useState<PokemonDataInterface[]>([]);
-    const [isLoading, setIsLoading] = useState(false);
-    const [prev, setPrev] = useState('');
-    const [next, setNext] = useState('');
+export const MainPage = () => {
+    const [offset, setOffset] = useState(0);
+    const [isPrevButtonAvailable, setPrev] = useState(true);
+    const [isNextButtonAvailable, setNext] = useState(false);
     const [chosenPok, setChosenPok] = useState<PokemonDataInterface>();
+    const dispatch = useAppDispatch();
+    let pokemonData = useAppSelector(state => state.pokemon.pokemons)
+    let loading = useAppSelector(state => state.pokemon.loading)
+    let dataForDownload = useAppSelector(state => state.pokemon.selectedItems)
+    // let totalCountPokemon = useAppSelector(state => state.pokemonReducer.totalCountPokemon)
 
-    const getAllPokemons = async (url?: string) => {
-        setIsLoading(true);
-        const response = await fetchAllPokemons(url);
-        setPrev(response.data.previous);
-        setNext(response.data.next);
-        const pokemonsData: PokemonsData = await response.data;
-        const result = pokemonsData.results.map(async (pokemon) => {
-            const pokemonData = await fetchPokemonData(pokemon.name);
-            setPokData(prevItems => [...prevItems, pokemonData]);
-        });
-        if (result.length) {
-            setIsLoading(false);
-        }
-    }
 
-    const searchPokemon = async (value) => {
-        setIsLoading(true);
-        setPokData([]);
-        if (value) {
-            localStorage.setItem('prev', value?.toLowerCase()?.trim());
-            const pokemonData = await fetchPokemonData(value.toLowerCase());
-            setPokData(prevItems => [...prevItems, pokemonData]);
-            setIsLoading(false);
-        } else {
-            getAllPokemons();
-            localStorage.clear();
+    const searchPokemon = async (value?: string) => {
+        if (value && value.length >= 1) {
+            dispatch(fetchPokemonByName(value));
         }
+        return dispatch(fetchPokemons({limit: 10, offset: offset}));
     };
 
     const getPrev = () => {
-        setPokData([]);
-        getAllPokemons(prev);
+        setOffset(offset => offset - 10);
     }
 
+
     const getNext = () => {
-        setPokData([]);
-        getAllPokemons(next);
+        setOffset(offset => offset + 10);
     }
 
     const getChosenPok = (chosenPok: PokemonDataInterface | undefined) => {
@@ -56,19 +46,25 @@ const MainPage = () => {
     }
 
     useEffect(() => {
-        let prev = localStorage.getItem('prev');
-        if (prev) {
-            searchPokemon(prev);
-            return;
-        }
-        getAllPokemons();
-    }, []);
+        // setNext(offset + 10 >= totalCountPokemon)
+        setPrev(offset === 0)
+        dispatch(fetchPokemons({limit: 10, offset: offset}));
+        console.log()
+    }, [offset]);
 
     return (
         <div>
             <ErrorBoundary>
                 <SearchComp search={searchPokemon}/>
                 <div className="box">
+                    <PokemonsList
+                        data-testid="pokemon-list"
+                        pokemons={pokemonData} isLoaded={true}
+                        isPrevButtonAvailable={isPrevButtonAvailable}
+                        isNextButtonAvailable={isNextButtonAvailable}
+                        getNext={() => getNext()}
+                        getPrev={() => getPrev()}
+                        chosenPok={getChosenPok}/>
                     {chosenPok &&
                       <PokemonPage
                         id={chosenPok.id}
@@ -77,15 +73,26 @@ const MainPage = () => {
                         weight={chosenPok.weight}
                         imgSrc={chosenPok.imgSrc}
                         stats={chosenPok.stats}
+                        isLoaded={loading}
                       />
                     }
-                    <PokemonsList
-                        pokemons={pokData} isLoaded={isLoading}
-                        prev={prev} next={next}
-                        getNext={() => getNext()}
-                        getPrev={() => getPrev()}
-                        chosenPok={getChosenPok}/>
                 </div>
+                {dataForDownload.length !== 0 &&
+                  <div className="button-group">
+                      {/*<button className="button-group__button"*/}
+                      {/*        onClick={() => {*/}
+                      {/*            dispatch(selectAll())*/}
+                      {/*        }}>Select All</button>*/}
+                    <button
+                      className="button-group__button" disabled={dataForDownload.length === 0}
+                      onClick={() => dispatch(unSelectAll())}>Unselect All
+                    </button>
+                    <button
+                      className="button-group__button" disabled={dataForDownload.length === 0}
+                      onClick={() => dispatch(downloadFile(dataForDownload))}>Download {dataForDownload.length} selected
+                    </button>
+                  </div>
+                }
             </ErrorBoundary>
         </div>
     );

@@ -1,7 +1,7 @@
 .demo {
-  position: relative;
   margin-top: 20px;
-  width: 100%;
+  margin-left: auto;
+  width: 450px;
   display: flex;
   flex-wrap: wrap;
   justify-content: space-evenly;
@@ -48,4 +48,40 @@
 
 .box {
   display: flex;
+  height: 502px;
+}
+
+.button-group {
+  display: flex;
+  width: 450px;
+  justify-content: center;
+  align-items: center;
+
+  &__button {
+    font-size: 16px;
+    font-family: cursive;
+    padding: 2px 10px;
+    border: 3px solid #48d76b;
+    border-radius: 15px;
+    cursor: pointer;
+    transition: .3s;
+
+    &:hover {
+      border: 3px solid #264a83;
+      color: #264a83;
+      background: #48d76b;
+      transition: .3s;
+    }
+
+    &:disabled {
+      color: gray;
+      cursor: default;
+
+      &:hover {
+        border: 3px solid #48d76b;
+        color: gray;
+        background: #264a83;
+      }
+    }
+  }
 }
