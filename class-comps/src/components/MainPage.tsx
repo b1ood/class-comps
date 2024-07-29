@@ -59,7 +59,7 @@ export const MainPage = () => {
                 <div className="box">
                     <PokemonsList
                         data-testid="pokemon-list"
-                        pokemons={pokemonData} isLoaded={true}
+                        pokemons={pokemonData} isLoaded={loading}
                         isPrevButtonAvailable={isPrevButtonAvailable}
                         isNextButtonAvailable={isNextButtonAvailable}
                         getNext={() => getNext()}
